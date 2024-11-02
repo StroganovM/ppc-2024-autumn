@@ -25,7 +25,8 @@ TEST(stroganov_m_count_symbols_in_string_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(global_out.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -66,7 +67,8 @@ TEST(stroganov_m_count_symbols_in_string_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_out.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();

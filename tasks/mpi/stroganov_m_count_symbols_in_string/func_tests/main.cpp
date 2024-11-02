@@ -68,7 +68,7 @@ TEST(stroganov_m_count_symbols_in_string_mpi, StringWithoutLetter) {
     taskDataSeq->outputs_count.emplace_back(reference_out.size());
 
     // Create Task
-      stroganov_m_count_symbols_in_string_mpi::TestMPITaskSequential TestMPITaskSequential(taskDataSeq);
+    stroganov_m_count_symbols_in_string_mpi::TestMPITaskSequential TestMPITaskSequential(taskDataSeq);
     ASSERT_EQ(TestMPITaskSequential.validation(), true);
     TestMPITaskSequential.pre_processing();
     TestMPITaskSequential.run();

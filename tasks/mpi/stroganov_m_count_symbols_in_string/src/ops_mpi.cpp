@@ -46,7 +46,7 @@ bool stroganov_m_count_symbols_in_string_mpi::TestMPITaskSequential::pre_process
 
 bool stroganov_m_count_symbols_in_string_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  bool valid_len = (taskData->inputs_count[0] >= 0 && taskData->outputs_count[0]==1);
+  bool valid_len = (taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] == 1);
   bool is_char_array = typeid(*taskData->inputs[0]).name() == typeid(uint8_t).name();
   return valid_len && is_char_array;
 }
@@ -106,7 +106,7 @@ bool stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel::run() {
 bool stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = result; 
+    reinterpret_cast<int*>(taskData->outputs[0])[0] = result;
   }
   return true;
 }

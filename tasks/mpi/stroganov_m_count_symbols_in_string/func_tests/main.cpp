@@ -9,7 +9,7 @@
 
 TEST(stroganov_m_count_symbols_in_string_mpi, EmptyString) {
   boost::mpi::communicator world;
-  std::string global_str="";
+  std::string global_str = "";
 
   // Create data
   std::vector<int> global_out(1, 0);
@@ -23,7 +23,7 @@ TEST(stroganov_m_count_symbols_in_string_mpi, EmptyString) {
     taskDataMpi->outputs_count.emplace_back(global_out.size());
   }
   // Create Task
-    stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
+  stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -113,7 +113,7 @@ TEST(stroganov_m_count_symbols_in_string_mpi, StringWithOnlyLetter) {
     taskDataSeq->outputs_count.emplace_back(reference_out.size());
 
     // Create Task
-      stroganov_m_count_symbols_in_string_mpi::TestMPITaskSequential TestMPITaskSequential(taskDataSeq);
+    stroganov_m_count_symbols_in_string_mpi::TestMPITaskSequential TestMPITaskSequential(taskDataSeq);
     ASSERT_EQ(TestMPITaskSequential.validation(), true);
     TestMPITaskSequential.pre_processing();
     TestMPITaskSequential.run();
@@ -139,7 +139,7 @@ TEST(stroganov_m_count_symbols_in_string_mpi, RandomString) {
   }
 
   // Create Task
-    stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
+  stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -157,7 +157,7 @@ TEST(stroganov_m_count_symbols_in_string_mpi, RandomString) {
     taskDataSeq->outputs_count.emplace_back(reference_out.size());
 
     // Create Task
-      stroganov_m_count_symbols_in_string_mpi::TestMPITaskSequential TestMPITaskSequential(taskDataSeq);
+    stroganov_m_count_symbols_in_string_mpi::TestMPITaskSequential TestMPITaskSequential(taskDataSeq);
     ASSERT_EQ(TestMPITaskSequential.validation(), true);
     TestMPITaskSequential.pre_processing();
     TestMPITaskSequential.run();

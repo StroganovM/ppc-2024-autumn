@@ -17,7 +17,7 @@ int stroganov_m_count_symbols_in_string_mpi::getRandomNum(int min, int max) {
 }
 
 std::string stroganov_m_count_symbols_in_string_mpi::getRandomString() {
-  std::string result="";
+  std::string result = "";
   std::string dictionary = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
   int str_len = getRandomNum(1000, 20000);
   for (int i = 0; i < str_len; i++) {
@@ -28,7 +28,7 @@ std::string stroganov_m_count_symbols_in_string_mpi::getRandomString() {
 
 int stroganov_m_count_symbols_in_string_mpi::countOfSymbols(std::string& str) {
   int result = 0;
-  size_t n =str.size();
+  size_t n = str.size();
   for (size_t i = 0; i < n; i++) {
     if (isalpha(str[i]) != 0) {
       result++;
@@ -46,7 +46,7 @@ bool stroganov_m_count_symbols_in_string_mpi::TestMPITaskSequential::pre_process
 
 bool stroganov_m_count_symbols_in_string_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  bool valid_len = (taskData->inputs_count[0]>=0 && taskData->outputs_count[0]==1);
+  bool valid_len = (taskData->inputs_count[0] >= 0 && taskData->outputs_count[0]==1);
   bool is_char_array = typeid(*taskData->inputs[0]).name() == typeid(uint8_t).name();
   return valid_len && is_char_array;
 }
@@ -66,39 +66,32 @@ bool stroganov_m_count_symbols_in_string_mpi::TestMPITaskSequential::post_proces
 bool stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   unsigned int partition_size = 0;
-
-      if (world.rank() == 0) {
-        partition_size = (taskData->inputs_count[0] + world.size() - 1) / world.size();  // Округление вверх
-
-        input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
-        
-        for (int proc = 1; proc < world.size(); ++proc) {
-          unsigned int start_idx = proc * partition_size;
-          unsigned int size_to_send = (start_idx + partition_size > input_.size())
-                                        ? input_.size() - start_idx
-                                        : partition_size;
-
-          world.send(proc, 0, input_.data() + start_idx, size_to_send);
-        }
-
-        local_input_ = input_.substr(0, partition_size);
-      } else {
-        std::vector<char> buffer(partition_size);
-        world.recv(0, 0, buffer.data(), partition_size);
-        local_input_ = std::string(buffer.data(), buffer.size());
-      }
-
-      result = 0;
-      return true;
+  if (world.rank() == 0) {
+    partition_size = (taskData->inputs_count[0] + world.size() - 1) / world.size();
+    input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
+    for (int proc = 1; proc < world.size(); ++proc) {
+      unsigned int start_idx = proc * partition_size;
+      unsigned int size_to_send =
+          (start_idx + partition_size > input_.size()) ? input_.size() - start_idx : partition_size;
+      world.send(proc, 0, input_.data() + start_idx, size_to_send);
+    }
+    local_input_ = input_.substr(0, partition_size);
+  } else {
+    std::vector<char> buffer(partition_size);
+    world.recv(0, 0, buffer.data(), partition_size);
+    local_input_ = std::string(buffer.data(), buffer.size());
+  }
+  result = 0;
+  return true;
 }
 
 bool stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-    if (world.rank() == 0) {
-        bool valid_input = taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] == 1;
-        bool is_char_array = typeid(*taskData->inputs[0]).name() == typeid(uint8_t).name();
-        return valid_input && is_char_array;
-      }
+  if (world.rank() == 0) {
+    bool valid_input = taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] == 1;
+    bool is_char_array = typeid(*taskData->inputs[0]).name() == typeid(uint8_t).name();
+    return valid_input && is_char_array;
+  }
   return true;
 }
 
@@ -114,6 +107,6 @@ bool stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel::post_processi
   internal_order_test();
   if (world.rank() == 0) {
     reinterpret_cast<int*>(taskData->outputs[0])[0] = result; 
-    }
+  }
   return true;
 }

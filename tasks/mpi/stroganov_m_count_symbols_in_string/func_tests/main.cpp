@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "mpi/stroganov_m_count_symbols_in_string/include/ops_mpi.hpp"
+#include "mpi/stroganov_m_count_symbols_in_string/src/ops_mpi.cpp"
 
 TEST(stroganov_m_count_symbols_in_string_mpi, EmptyString) {
   boost::mpi::communicator world;
@@ -125,7 +126,7 @@ TEST(stroganov_m_count_symbols_in_string_mpi, StringWithOnlyLetter) {
 
 TEST(stroganov_m_count_symbols_in_string_mpi, RandomString) {
   boost::mpi::communicator world;
-  std::string global_str = stroganov_m_count_symbols_in_string_mpi::getRandomString();
+  std::string global_str = getRandomStringForCountOfSymbols();
   // Create data
   std::vector<int> global_out(1, 0);
 
@@ -304,7 +305,7 @@ TEST(stroganov_m_count_symbols_in_string_mpi, OneLetterSingleString) {
 
 TEST(stroganov_m_count_symbols_in_string_mpi, SingleStringWithoutLetter) {
   boost::mpi::communicator world;
-  std::string global_str = "qwer";
+  std::string global_str = "1";
 
   // Create data
   std::vector<int> global_out(1, 0);
@@ -346,4 +347,3 @@ TEST(stroganov_m_count_symbols_in_string_mpi, SingleStringWithoutLetter) {
     ASSERT_EQ(reference_out[0], global_out[0]);
   }
 }
-

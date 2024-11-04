@@ -438,7 +438,6 @@ TEST(stroganov_m_count_symbols_in_string_mpi, FourLetterSingleString) {
   }
 }
 
-
 TEST(stroganov_m_count_symbols_in_string_mpi, SingleStringWithoutLetter) {
   boost::mpi::communicator world;
   std::string global_str = "1";

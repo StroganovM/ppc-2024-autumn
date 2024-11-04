@@ -67,7 +67,6 @@ bool stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel::pre_processin
   return true;
 }
 
-
 bool stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
@@ -90,23 +89,23 @@ bool stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel::run() {
         world.send(proc, 0, 0);
         continue;
       }
-      unsigned int size_to_send = (start_idx + partition_size > input_.size()) ?
-                                  input_.size() - start_idx : partition_size;
+      unsigned int size_to_send =
+          (start_idx + partition_size > input_.size()) ? input_.size() - start_idx : partition_size;
       world.send(proc, 0, size_to_send);
       world.send(proc, 0, input_.data() + start_idx, size_to_send);
     }
     local_input_ = input_.substr(0, partition_size);
   } else {
-  unsigned int received_size = 0;
-  world.recv(0, 0, received_size);
-  if (received_size > 0) {
-    std::vector<char> buffer(received_size);
-    world.recv(0, 0, buffer.data(), received_size);
-    local_input_ = std::string(buffer.data(), buffer.size());
-  } else {
-    local_input_.clear();
+    unsigned int received_size = 0;
+    world.recv(0, 0, received_size);
+    if (received_size > 0) {
+      std::vector<char> buffer(received_size);
+      world.recv(0, 0, buffer.data(), received_size);
+      local_input_ = std::string(buffer.data(), buffer.size());
+    } else {
+      local_input_.clear();
+    }
   }
-}
   int local_result = 0;
   local_result = countOfSymbols(local_input_);
   reduce(world, local_result, result, std::plus(), 0);

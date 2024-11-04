@@ -8,8 +8,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 int getRandomNumForCountOfSymbols(int min, int max) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -69,6 +67,7 @@ bool stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel::pre_processin
   return true;
 }
 
+
 bool stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
@@ -83,27 +82,31 @@ bool stroganov_m_count_symbols_in_string_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   unsigned int partition_size = 0;
   if (world.rank() == 0) {
-    if(taskData->inputs_count[0] < static_cast<unsigned int>(world.size())){
-      partition_size = 1;
-    } else{
-      partition_size = (taskData->inputs_count[0] + world.size() - 1) / world.size();
-    }
+    partition_size = (taskData->inputs_count[0] + world.size() - 1) / world.size();
     input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
     for (int proc = 1; proc < world.size(); ++proc) {
       unsigned int start_idx = proc * partition_size;
-      unsigned int size_to_send =
-        (start_idx + partition_size > input_.size()) ? input_.size() - start_idx : partition_size;
+      if (start_idx >= input_.size()) {
+        world.send(proc, 0, 0);
+        continue;
+      }
+      unsigned int size_to_send = (start_idx + partition_size > input_.size()) ?
+                                  input_.size() - start_idx : partition_size;
       world.send(proc, 0, size_to_send);
       world.send(proc, 0, input_.data() + start_idx, size_to_send);
-  }
+    }
     local_input_ = input_.substr(0, partition_size);
   } else {
-    unsigned int received_size = 0;
-    world.recv(0, 0, received_size);
+  unsigned int received_size = 0;
+  world.recv(0, 0, received_size);
+  if (received_size > 0) {
     std::vector<char> buffer(received_size);
     world.recv(0, 0, buffer.data(), received_size);
     local_input_ = std::string(buffer.data(), buffer.size());
+  } else {
+    local_input_.clear();
   }
+}
   int local_result = 0;
   local_result = countOfSymbols(local_input_);
   reduce(world, local_result, result, std::plus(), 0);

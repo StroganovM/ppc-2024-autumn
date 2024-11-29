@@ -12,8 +12,7 @@
 
 using namespace std::chrono_literals;
 
-const std::vector<bool>& stroganov_m_dining_philosophers::TestMPITaskParallel::get_forks()
-const { return forks; }
+const std::vector<bool>& stroganov_m_dining_philosophers::TestMPITaskParallel::get_forks() const { return forks; }
 
 bool stroganov_m_dining_philosophers::TestMPITaskParallel::validation() {
   internal_order_test();

@@ -149,32 +149,31 @@ TEST(stroganov_m_dining_philosophers, Validation_Check) {
     }
     stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
     ASSERT_EQ(testMpiTaskParallel.validation(), true);
- }
+  }
 }
 
 TEST(stroganov_m_dining_philosophers, Thinking_And_Eating_Sequence) {
   boost::mpi::communicator world;
 
   int count_philosophers = world.size();
-  std::shared_ptr<ppc::core::TaskData> taskDataMpi =
-std::make_shared<ppc::core::TaskData>();
-     if (world.rank() == 0) {
-       taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_philosophers));
-       taskDataMpi->inputs_count.emplace_back(sizeof(count_philosophers));
-     }
+  std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_philosophers));
+    taskDataMpi->inputs_count.emplace_back(sizeof(count_philosophers));
+  }
 
-     stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
-     ASSERT_TRUE(testMpiTaskParallel.validation());
-     ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-     int philosopher_id = world.rank();
-     for (int i = 0; i < 3; ++i) {
-       testMpiTaskParallel.think(philosopher_id);
-       ASSERT_TRUE(testMpiTaskParallel.distribution_forks(philosopher_id));
-       testMpiTaskParallel.eat(philosopher_id);
-       testMpiTaskParallel.release_forks(philosopher_id);
-      }
-      ASSERT_TRUE(testMpiTaskParallel.run());
-      ASSERT_TRUE(testMpiTaskParallel.post_processing());
+  stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  int philosopher_id = world.rank();
+  for (int i = 0; i < 3; ++i) {
+    testMpiTaskParallel.think(philosopher_id);
+    ASSERT_TRUE(testMpiTaskParallel.distribution_forks(philosopher_id));
+    testMpiTaskParallel.eat(philosopher_id);
+    testMpiTaskParallel.release_forks(philosopher_id);
+  }
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
 }
 
 

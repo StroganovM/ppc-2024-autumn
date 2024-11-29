@@ -17,7 +17,7 @@ TEST(stroganov_m_dining_philosophers, test_pipeline_run) {
     taskDataPar->inputs_count.emplace_back(sizeof(int));
   }
 
-  auto testMpiTaskParallel = std::make_shared<koshkin_m_dining_philosophers::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<stroganov_m_dining_philosophers::TestMPITaskParallel>(taskDataPar);
 
   if (world.size() < 2) {
     ASSERT_FALSE(testMpiTaskParallel->validation());
@@ -56,7 +56,7 @@ TEST(stroganov_m_dining_philosophers, test_task_run) {
     taskDataPar->inputs_count.emplace_back(sizeof(int));
   }
 
-  auto testMpiTaskParallel = std::make_shared<koshkin_m_dining_philosophers::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<stroganov_m_dining_philosophers::TestMPITaskParallel>(taskDataPar);
 
   if (world.size() < 2) {
     ASSERT_FALSE(testMpiTaskParallel->validation());

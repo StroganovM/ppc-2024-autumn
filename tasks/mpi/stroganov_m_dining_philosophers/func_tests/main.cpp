@@ -28,7 +28,7 @@ TEST(stroganov_m_dining_philosophers, Valid_Number_Of_Philosophers) {
   ASSERT_TRUE(testMpiTaskParallel.post_processing());
 }
 
-TEST(stroganov_m_dining_philosophers, SinglePhilosopher) {
+TEST(stroganov_m_dining_philosophers, Single_Philosopher) {
   boost::mpi::communicator world;
 
   int count_philosophers = 1;
@@ -42,7 +42,7 @@ TEST(stroganov_m_dining_philosophers, SinglePhilosopher) {
   // Create Task
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
 
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
 }
 
 TEST(stroganov_m_dining_philosophers, Default_Number_Of_Philosophers) {
@@ -127,7 +127,7 @@ TEST(stroganov_m_dining_philosophers, Validation_Check) {
       taskDataMpi->inputs_count.emplace_back(sizeof(count_philosophers));
     }
     stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
-    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
   }
 
   {
@@ -175,7 +175,6 @@ TEST(stroganov_m_dining_philosophers, Thinking_And_Eating_Sequence) {
   ASSERT_TRUE(testMpiTaskParallel.run());
   ASSERT_TRUE(testMpiTaskParallel.post_processing());
 }
-
 
 TEST(stroganov_m_dining_philosophers, Deadlock_Free_Execution) {
   boost::mpi::communicator world;
@@ -313,11 +312,7 @@ TEST(stroganov_m_dining_philosophers, Test_Iterations_10) {
 
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  if (world.size() < 2) {
-    ASSERT_FALSE(testMpiTaskParallel.validation());
-  } else {
-    ASSERT_TRUE(testMpiTaskParallel.validation());
-  }
+  ASSERT_TRUE(testMpiTaskParallel.validation());
 
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -358,11 +353,7 @@ TEST(stroganov_m_dining_philosophers, Test_Iterations_100) {
 
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  if (world.size() < 2) {
-    ASSERT_FALSE(testMpiTaskParallel.validation());
-  } else {
-    ASSERT_TRUE(testMpiTaskParallel.validation());
-  }
+  ASSERT_TRUE(testMpiTaskParallel.validation());
 
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -375,7 +366,7 @@ TEST(stroganov_m_dining_philosophers, Test_Iterations_100) {
   }
 }
 
-TEST(stroganov_m_dining_philosophers, Test_Iterations_300) {
+TEST(stroganov_m_dining_philosophers, Test_Iterations_500) {
   boost::mpi::communicator world;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -403,11 +394,7 @@ TEST(stroganov_m_dining_philosophers, Test_Iterations_300) {
 
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  if (world.size() < 2) {
-    ASSERT_FALSE(testMpiTaskParallel.validation());
-  } else {
-    ASSERT_TRUE(testMpiTaskParallel.validation());
-  }
+  ASSERT_TRUE(testMpiTaskParallel.validation());
 
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();

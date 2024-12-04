@@ -425,7 +425,7 @@ TEST(stroganov_m_dining_philosophers, Simulation_Time_Check) {
   auto end_time = std::chrono::steady_clock::now();
 
   std::chrono::duration<double> elapsed_time = end_time - start_time;
-  ASSERT_LT(elapsed_time.count(), 2.0); // Проверка, что выполнение занимает менее 2 секунд.
+  ASSERT_LT(elapsed_time.count(), 2.0);  // Проверка, что выполнение занимает менее 2 секунд.
 
   ASSERT_TRUE(testMpiTaskParallel.post_processing());
 }

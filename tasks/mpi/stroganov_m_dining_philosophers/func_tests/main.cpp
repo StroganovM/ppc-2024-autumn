@@ -48,7 +48,7 @@ TEST(stroganov_m_dining_philosophers, Default_Number_Of_Philosophers) {
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
-  if (world.size() < 2){
+  if (world.size() < 2) {
     ASSERT_FALSE(testMpiTaskParallel.validation());
   } else {
     ASSERT_TRUE(testMpiTaskParallel.validation());

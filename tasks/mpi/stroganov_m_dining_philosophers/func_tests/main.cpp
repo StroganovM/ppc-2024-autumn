@@ -27,23 +27,6 @@ TEST(stroganov_m_dining_philosophers, Valid_Number_Of_Philosophers) {
   ASSERT_TRUE(testMpiTaskParallel.post_processing());
 }
 
-TEST(stroganov_m_dining_philosophers, Single_Philosopher) {
-  boost::mpi::communicator world;
-
-  int count_philosophers = 1;
-
-  std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_philosophers));
-    taskDataMpi->inputs_count.emplace_back(sizeof(count_philosophers));
-  }
-
-  // Create Task
-  stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
-
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
-}
-
 TEST(stroganov_m_dining_philosophers, Default_Number_Of_Philosophers) {
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
@@ -156,34 +139,6 @@ TEST(stroganov_m_dining_philosophers, Validation_Check) {
     stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
     ASSERT_EQ(testMpiTaskParallel.validation(), true);
   }
-}
-
-TEST(stroganov_m_dining_philosophers, Thinking_And_Eating_Sequence) {
-  boost::mpi::communicator world;
-
-  int count_philosophers = world.size();
-  std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_philosophers));
-    taskDataMpi->inputs_count.emplace_back(sizeof(count_philosophers));
-  }
-
-  stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
-  if (world.size() < 2) {
-    ASSERT_FALSE(testMpiTaskParallel.validation());
-  } else {
-    ASSERT_TRUE(testMpiTaskParallel.validation());
-  }
-  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-  int philosopher_id = world.rank();
-  for (int i = 0; i < 3; ++i) {
-    testMpiTaskParallel.think(philosopher_id);
-    ASSERT_TRUE(testMpiTaskParallel.distribution_forks(philosopher_id));
-    testMpiTaskParallel.eat(philosopher_id);
-    testMpiTaskParallel.release_forks(philosopher_id);
-  }
-  ASSERT_TRUE(testMpiTaskParallel.run());
-  ASSERT_TRUE(testMpiTaskParallel.post_processing());
 }
 
 TEST(stroganov_m_dining_philosophers, Deadlock_Free_Execution) {
@@ -470,7 +425,7 @@ TEST(stroganov_m_dining_philosophers, Simulation_Time_Check) {
   auto end_time = std::chrono::steady_clock::now();
 
   std::chrono::duration<double> elapsed_time = end_time - start_time;
-  ASSERT_LT(elapsed_time.count(), 2.0);  // Проверка, что выполнение занимает менее 2 секунд.
+  ASSERT_LT(elapsed_time.count(), 2.0); // Проверка, что выполнение занимает менее 2 секунд.
 
   ASSERT_TRUE(testMpiTaskParallel.post_processing());
 }

@@ -9,6 +9,8 @@
 #include <mutex>
 #include <thread>
 #include <vector>
+#include <random>
+#include <memory>
 
 using namespace std::chrono_literals;
 
@@ -119,7 +121,5 @@ bool stroganov_m_dining_philosophers::TestMPITaskParallel::run() {
 
 bool stroganov_m_dining_philosophers::TestMPITaskParallel::post_processing() {
   internal_order_test();
-  if (world.rank() == 0) {
-  }
   return true;
 }

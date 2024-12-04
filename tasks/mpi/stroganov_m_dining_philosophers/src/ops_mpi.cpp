@@ -32,7 +32,7 @@ bool stroganov_m_dining_philosophers::TestMPITaskParallel::validation() {
     broadcast(world, count_philosophers, 0);
   }
 
-  return count_philosophers > 0;
+  return count_philosophers > 1;
 }
 
 bool stroganov_m_dining_philosophers::TestMPITaskParallel::pre_processing() {

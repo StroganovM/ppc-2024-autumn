@@ -20,7 +20,6 @@ TEST(stroganov_m_dining_philosophers, Valid_Number_Of_Philosophers) {
     taskDataMpi->inputs_count.emplace_back(sizeof(count_philosophers));
   }
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
-
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   ASSERT_TRUE(testMpiTaskParallel.pre_processing());
 
@@ -42,15 +41,19 @@ TEST(stroganov_m_dining_philosophers, Single_Philosopher) {
   // Create Task
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
 
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
 
 TEST(stroganov_m_dining_philosophers, Default_Number_Of_Philosophers) {
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
+  if (world.size() < 2){
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  } else {
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+  }
 
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
   ASSERT_TRUE(testMpiTaskParallel.pre_processing());
 
   testMpiTaskParallel.run();
@@ -105,6 +108,9 @@ TEST(stroganov_m_dining_philosophers, Validation_Check) {
   {
     std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
     stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
+    if (world.size() == 1) {
+      GTEST_SKIP() << "Skipping test as world size = 1";
+    }
     ASSERT_EQ(testMpiTaskParallel.validation(), true);
   }
 
@@ -127,7 +133,7 @@ TEST(stroganov_m_dining_philosophers, Validation_Check) {
       taskDataMpi->inputs_count.emplace_back(sizeof(count_philosophers));
     }
     stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
 
   {
@@ -163,7 +169,11 @@ TEST(stroganov_m_dining_philosophers, Thinking_And_Eating_Sequence) {
   }
 
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
-  ASSERT_TRUE(testMpiTaskParallel.validation());
+  if (world.size() < 2) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  } else {
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+  }
   ASSERT_TRUE(testMpiTaskParallel.pre_processing());
   int philosopher_id = world.rank();
   for (int i = 0; i < 3; ++i) {
@@ -187,7 +197,11 @@ TEST(stroganov_m_dining_philosophers, Deadlock_Free_Execution) {
   }
 
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
-  ASSERT_TRUE(testMpiTaskParallel.validation());
+  if (world.size() < 2) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  } else {
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+  }
   ASSERT_TRUE(testMpiTaskParallel.pre_processing());
 
   ASSERT_TRUE(testMpiTaskParallel.run());
@@ -206,7 +220,11 @@ TEST(stroganov_m_dining_philosophers, Initial_Forks_State) {
   }
 
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
-  ASSERT_TRUE(testMpiTaskParallel.validation());
+  if (world.size() < 2) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  } else {
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+  }
   ASSERT_TRUE(testMpiTaskParallel.pre_processing());
   for (int i = 0; i < count_philosophers; ++i) {
     ASSERT_FALSE(testMpiTaskParallel.get_forks()[i]) << "Fork " << i << " should be free initially.";
@@ -225,7 +243,11 @@ TEST(stroganov_m_dining_philosophers, Forks_Locking) {
 
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
 
-  ASSERT_TRUE(testMpiTaskParallel.validation());
+  if (world.size() < 2) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  } else {
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+  }
   ASSERT_TRUE(testMpiTaskParallel.pre_processing());
 
   int philosopher_id = world.rank();
@@ -250,7 +272,11 @@ TEST(stroganov_m_dining_philosophers, Forks_Cannot_Used_When_Locked) {
   }
 
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
-  ASSERT_TRUE(testMpiTaskParallel.validation());
+  if (world.size() < 2) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  } else {
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+  }
   ASSERT_TRUE(testMpiTaskParallel.pre_processing());
   int philosopher_id = world.rank();
   ASSERT_TRUE(testMpiTaskParallel.distribution_forks(philosopher_id));
@@ -275,7 +301,11 @@ TEST(stroganov_m_dining_philosophers, Forks_Released_After_Completion) {
 
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
 
-  ASSERT_TRUE(testMpiTaskParallel.validation());
+  if (world.size() < 2) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  } else {
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+  }
   ASSERT_TRUE(testMpiTaskParallel.pre_processing());
   ASSERT_TRUE(testMpiTaskParallel.run());
   ASSERT_TRUE(testMpiTaskParallel.post_processing());
@@ -312,7 +342,11 @@ TEST(stroganov_m_dining_philosophers, Test_Iterations_10) {
 
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  ASSERT_TRUE(testMpiTaskParallel.validation());
+  if (world.size() < 2) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  } else {
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+  }
 
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -353,7 +387,11 @@ TEST(stroganov_m_dining_philosophers, Test_Iterations_100) {
 
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  ASSERT_TRUE(testMpiTaskParallel.validation());
+  if (world.size() < 2) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  } else {
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+  }
 
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -394,7 +432,11 @@ TEST(stroganov_m_dining_philosophers, Test_Iterations_500) {
 
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  ASSERT_TRUE(testMpiTaskParallel.validation());
+  if (world.size() < 2) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  } else {
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+  }
 
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();

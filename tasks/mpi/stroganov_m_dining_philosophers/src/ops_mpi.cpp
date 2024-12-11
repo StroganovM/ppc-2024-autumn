@@ -21,7 +21,7 @@ bool stroganov_m_dining_philosophers::TestMPITaskParallel::pre_processing() {
   l_philosopher = (world.rank() + world.size() - 1) % world.size();
   r_philosopher = (world.rank() + 1) % world.size();
 
-  status = 0;   //0-размышляет, 1 - ест, 2 - голоден
+  status = 0;  //0-размышляет, 1 - ест, 2 - голоден
   return true;
 }
 
@@ -57,7 +57,6 @@ void stroganov_m_dining_philosophers::TestMPITaskParallel::release_forks() {
 }
 
 bool stroganov_m_dining_philosophers::TestMPITaskParallel::distribution_forks() {
-
   if (count_philosophers == 0) {
     return false;
   }

@@ -55,7 +55,7 @@ void stroganov_m_dining_philosophers::TestMPITaskParallel::release_forks() {
   world.send(l_philosopher, 0, status);
   world.send(r_philosopher, 0, status);
 }
-
+/*
 bool stroganov_m_dining_philosophers::TestMPITaskParallel::distribution_forks() {
   if (count_philosophers == 0) {
     return false;
@@ -86,6 +86,56 @@ bool stroganov_m_dining_philosophers::TestMPITaskParallel::distribution_forks() 
         status = 1;
         world.isend(l_philosopher, 0, status);
         world.isend(r_philosopher, 0, status);
+      }
+    }
+  }
+  return true;
+}
+*/
+
+bool stroganov_m_dining_philosophers::TestMPITaskParallel::distribution_forks() {
+  if (count_philosophers == 0) {
+    return false;
+  }
+
+  status = 2;
+  int l_status = -1;
+  int r_status = -1;
+
+  if (world.rank() % 2 == 0) {
+    world.isend(l_philosopher, 0, status);
+
+    // Проверка на наличие сообщения перед irecv
+    if (world.iprobe(l_philosopher, 0)) {
+      world.irecv(l_philosopher, 0, l_status);
+      if (l_status == 0) {
+        world.isend(r_philosopher, 0, status);
+
+        if (world.iprobe(r_philosopher, 0)) {
+          world.irecv(r_philosopher, 0, r_status);
+          if (r_status == 0) {
+            status = 1;
+            world.isend(l_philosopher, 0, status);
+            world.isend(r_philosopher, 0, status);
+          }
+        }
+      }
+    }
+  } else {
+    // Проверка на наличие сообщения перед блокирующим recv
+    if (world.iprobe(r_philosopher, 0)) {
+      world.recv(r_philosopher, 0, r_status);
+      if (r_status == 0) {
+        world.isend(l_philosopher, 0, status);
+
+        if (world.iprobe(l_philosopher, 0)) {
+          world.irecv(l_philosopher, 0, l_status);
+          if (l_status == 0) {
+            status = 1;
+            world.isend(l_philosopher, 0, status);
+            world.isend(r_philosopher, 0, status);
+          }
+        }
       }
     }
   }

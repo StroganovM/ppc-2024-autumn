@@ -13,14 +13,13 @@
 TEST(stroganov_m_dining_philosophers, Valid_Number_Of_Philosophers) {
   boost::mpi::communicator world;
   int count_philosophers = 5;
-  auto taskDataMpi = std::make_shared<ppc::core::TaskData>();
+  auto taskData = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_philosophers));
-    taskDataMpi->inputs_count.emplace_back(sizeof(count_philosophers));
+    taskData->inputs_count.push_back(count_philosophers);
   }
 
-  stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
+  stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskData);
   if (world.size() < 2) {
     GTEST_SKIP();
   }
@@ -32,15 +31,14 @@ TEST(stroganov_m_dining_philosophers, Valid_Number_Of_Philosophers) {
 
 TEST(stroganov_m_dining_philosophers, Deadlock_Free_Execution) {
   boost::mpi::communicator world;
-  auto taskDataMpi = std::make_shared<ppc::core::TaskData>();
+  auto taskData = std::make_shared<ppc::core::TaskData>();
   int count_philosophers = world.size();
 
   if (world.rank() == 0) {
-    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_philosophers));
-    taskDataMpi->inputs_count.emplace_back(sizeof(count_philosophers));
+    taskData->inputs_count.push_back(count_philosophers);
   }
 
-  stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
+  stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskData);
   if (world.size() < 2) {
     GTEST_SKIP();
   }
@@ -53,14 +51,13 @@ TEST(stroganov_m_dining_philosophers, Deadlock_Free_Execution) {
 TEST(stroganov_m_dining_philosophers, Custom_Logic_Execution) {
   boost::mpi::communicator world;
   int count_philosophers = 4;
-  auto taskDataMpi = std::make_shared<ppc::core::TaskData>();
+  auto taskData = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_philosophers));
-    taskDataMpi->inputs_count.emplace_back(sizeof(count_philosophers));
+    taskData->inputs_count.push_back(count_philosophers);
   }
 
-  stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
+  stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskData);
   if (world.size() < 2) {
     GTEST_SKIP();
   }
@@ -182,15 +179,14 @@ TEST(stroganov_m_dining_philosophers, Test_with_25_philosophers) {
 TEST(stroganov_m_dining_philosophers, Deadlock_Handling) {
   boost::mpi::communicator world;
   int count_philosophers = world.size();
-  auto taskDataMpi = std::make_shared<ppc::core::TaskData>();
+  auto taskData = std::make_shared<ppc::core::TaskData>();
 
   // Подготовка данных
   if (world.rank() == 0) {
-    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_philosophers));
-    taskDataMpi->inputs_count.emplace_back(sizeof(count_philosophers));
+    taskData->inputs_count.push_back(count_philosophers);
   }
 
-  stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
+  stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskData);
 
   // Пропуск теста, если недостаточно процессов
   if (world.size() < 2) {
@@ -224,11 +220,10 @@ TEST(stroganov_m_dining_philosophers, Single_Philosopher) {
   // Проверка работы с одним философом (неправильный случай, должен вернуть false)
   if (world.rank() == 0) {
     int count_philosophers = 1;
-    auto taskDataMpi = std::make_shared<ppc::core::TaskData>();
-    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_philosophers));
-    taskDataMpi->inputs_count.emplace_back(sizeof(count_philosophers));
+    auto taskData = std::make_shared<ppc::core::TaskData>();
+    taskData->inputs_count.push_back(count_philosophers);
 
-    stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
+    stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskData);
 
     ASSERT_FALSE(testMpiTaskParallel.validation());  // Проверка, что валидация провалится
   }
@@ -240,11 +235,10 @@ TEST(stroganov_m_dining_philosophers, Invalid_Philosopher_Count) {
   // Проверка на случай, когда количество философов не соответствует ожиданиям
   if (world.rank() == 0) {
     int count_philosophers = -5;  // Некорректное количество философов
-    auto taskDataMpi = std::make_shared<ppc::core::TaskData>();
-    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_philosophers));
-    taskDataMpi->inputs_count.emplace_back(sizeof(count_philosophers));
+    auto taskData = std::make_shared<ppc::core::TaskData>();
+    taskData->inputs_count.push_back(count_philosophers);
 
-    stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
+    stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskData);
 
     ASSERT_FALSE(testMpiTaskParallel.validation());  // Проверка, что валидация провалится
   }

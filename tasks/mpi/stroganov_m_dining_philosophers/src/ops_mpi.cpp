@@ -6,6 +6,7 @@
 #include <condition_variable>
 #include <functional>
 #include <iostream>
+#include <random>
 #include <thread>
 #include <vector>
 
@@ -20,8 +21,10 @@ bool stroganov_m_dining_philosophers::TestMPITaskParallel::pre_processing() {
 
   l_philosopher = (world.rank() + world.size() - 1) % world.size();
   r_philosopher = (world.rank() + 1) % world.size();
-
-  status = 0;  // 0-размышляет, 1 - ест, 2 - голоден
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> distrib(0, 2);
+  status = distrib(gen);  // 0-размышляет, 1 - ест, 2 - голоден
   return true;
 }
 
@@ -29,15 +32,12 @@ bool stroganov_m_dining_philosophers::TestMPITaskParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    if (!taskData->inputs.empty() && !taskData->inputs_count.empty() &&
-        taskData->inputs_count[0] >= static_cast<int>(sizeof(int))) {
-      count_philosophers = *reinterpret_cast<int*>(taskData->inputs[0]);
-    } else {
-      count_philosophers = world.size();
-    }
+    count_philosophers = taskData->inputs_count[0];
+  } else {
+    count_philosophers = world.size();
   }
 
-  return count_philosophers > 1;
+  return count_philosophers >= 2;
 }
 
 void stroganov_m_dining_philosophers::TestMPITaskParallel::think() {
@@ -47,7 +47,7 @@ void stroganov_m_dining_philosophers::TestMPITaskParallel::think() {
 
 void stroganov_m_dining_philosophers::TestMPITaskParallel::eat() {
   status = 1;
-  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  std::this_thread::sleep_for(std::chrono::milliseconds(80));
 }
 
 void stroganov_m_dining_philosophers::TestMPITaskParallel::release_forks() {

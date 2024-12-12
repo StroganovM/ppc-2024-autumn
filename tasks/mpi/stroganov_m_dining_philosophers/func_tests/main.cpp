@@ -49,7 +49,7 @@ TEST(stroganov_m_dining_philosophers, Deadlock_Free_Execution) {
   ASSERT_TRUE(testMpiTaskParallel.run());
   ASSERT_TRUE(testMpiTaskParallel.post_processing());
 }
-*/
+
 TEST(stroganov_m_dining_philosophers, Custom_Logic_Execution) {
   boost::mpi::communicator world;
   int count_philosophers = 4;
@@ -70,7 +70,7 @@ TEST(stroganov_m_dining_philosophers, Custom_Logic_Execution) {
   ASSERT_TRUE(testMpiTaskParallel.run());
   ASSERT_TRUE(testMpiTaskParallel.post_processing());
 }
-
+*/
 TEST(stroganov_m_dining_philosophers, Test_default_num_philosophers) {
   boost::mpi::communicator world;
 

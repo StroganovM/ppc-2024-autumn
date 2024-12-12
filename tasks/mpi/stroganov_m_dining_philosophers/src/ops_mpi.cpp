@@ -49,7 +49,7 @@ void stroganov_m_dining_philosophers::TestMPITaskParallel::eat() {
   status = 1;
   std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
-/*
+
 void stroganov_m_dining_philosophers::TestMPITaskParallel::release_forks() {
   status = 0;
   world.send(l_philosopher, 0, status);
@@ -91,8 +91,7 @@ bool stroganov_m_dining_philosophers::TestMPITaskParallel::distribution_forks() 
   }
   return true;
 }
-*/
-/*
+
 bool stroganov_m_dining_philosophers::TestMPITaskParallel::distribution_forks() {
   if (count_philosophers == 0) {
     return false;
@@ -121,33 +120,6 @@ bool stroganov_m_dining_philosophers::TestMPITaskParallel::distribution_forks() 
 
   return true;
 }
-*/
-
-bool stroganov_m_dining_philosophers::TestMPITaskParallel::distribution_forks() {
-  status = 2;
-  world.isend(l_philosopher, 0, 2);
-  world.isend(r_philosopher, 0, 2);
-  int l_response = 0;
-  int r_response = 2;
-  world.irecv(l_philosopher, 0, l_response);
-  world.irecv(r_philosopher, 0, r_response);
-
-  return true;
-}
-
-void stroganov_m_dining_philosophers::TestMPITaskParallel::release_forks() {
-  status = 0;
-  world.isend(l_philosopher, 0, 1);
-  world.isend(r_philosopher, 0, 1);
-  while (world.iprobe(l_philosopher, 0)) {
-    int ack;
-    world.irecv(l_philosopher, 0, ack);
-  }
-  while (world.iprobe(r_philosopher, 0)) {
-    int ack;
-    world.irecv(r_philosopher, 0, ack);
-  }
-}
 
 bool stroganov_m_dining_philosophers::TestMPITaskParallel::run() {
   internal_order_test();
@@ -169,7 +141,7 @@ bool stroganov_m_dining_philosophers::TestMPITaskParallel::check_all_think() {
   world.barrier();
   return std::all_of(all_states.begin(), all_states.end(), [](int state) { return state == 0; });
 }
-/*
+
 bool stroganov_m_dining_philosophers::TestMPITaskParallel::check_deadlock() {
   std::vector<int> all_states(world.size(), 0);
   boost::mpi::all_gather(world, status, all_states);
@@ -179,24 +151,6 @@ bool stroganov_m_dining_philosophers::TestMPITaskParallel::check_deadlock() {
     }
   }
   return true;
-}
-*/
-
-bool stroganov_m_dining_philosophers::TestMPITaskParallel::check_deadlock() {
-  int local_state = (status == 2) ? 1 : 0;
-  std::vector<int> all_states(world.size(), 0);
-  boost::mpi::gather(world, local_state, all_states, 0);
-  bool deadlock = true;
-  if (world.rank() == 0) {
-    for (std::size_t i = 0; i < all_states.size(); ++i) {
-      if (all_states[i] == 0) {
-        deadlock = false;
-        break;
-      }
-    }
-  }
-  boost::mpi::broadcast(world, deadlock, 0);
-  return deadlock;
 }
 
 bool stroganov_m_dining_philosophers::TestMPITaskParallel::post_processing() {

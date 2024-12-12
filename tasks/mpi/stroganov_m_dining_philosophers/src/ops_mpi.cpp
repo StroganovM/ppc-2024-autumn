@@ -154,5 +154,10 @@ bool stroganov_m_dining_philosophers::TestMPITaskParallel::check_deadlock() {
 
 bool stroganov_m_dining_philosophers::TestMPITaskParallel::post_processing() {
   internal_order_test();
+  world.barrier();
+  while (world.iprobe(MPI_ANY_SOURCE, MPI_ANY_TAG)) {
+    int leftover_message;
+    world.recv(MPI_ANY_SOURCE, MPI_ANY_TAG, leftover_message);
+  }
   return true;
 }

@@ -12,9 +12,9 @@
 
 TEST(stroganov_m_dining_philosophers, Valid_Number_Of_Philosophers) {
   boost::mpi::communicator world;
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  
   int count_philosophers = 5;
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+
   if (world.rank() == 0) {
     taskData->inputs_count.push_back(count_philosophers);
   }

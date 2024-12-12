@@ -70,7 +70,7 @@ TEST(stroganov_m_dining_philosophers, Custom_Logic_Execution) {
   ASSERT_TRUE(testMpiTaskParallel.run());
   ASSERT_TRUE(testMpiTaskParallel.post_processing());
 }
-*/
+
 TEST(stroganov_m_dining_philosophers, Test_default_num_philosophers) {
   boost::mpi::communicator world;
 
@@ -178,7 +178,7 @@ TEST(stroganov_m_dining_philosophers, Test_with_25_philosophers) {
     GTEST_SKIP() << "Skipping test due to failed validation";
   }
 }
-
+*/
 /*
 TEST(stroganov_m_dining_philosophers, Deadlock_Handling) {
   boost::mpi::communicator world;

@@ -74,12 +74,12 @@ bool stroganov_m_dining_philosophers::TestMPITaskParallel::distribution_forks() 
   if (world.rank() % 2 == 0) {
     world.isend(l_philosopher, 0, status);
     if (world.iprobe(l_philosopher, 0)) {
-      world.irecv(l_philosopher, 0, l_status);
+      world.recv(l_philosopher, 0, l_status);
       if (l_status == 0) {
         world.isend(r_philosopher, 0, status);
 
         if (world.iprobe(r_philosopher, 0)) {
-          world.irecv(r_philosopher, 0, r_status);
+          world.recv(r_philosopher, 0, r_status);
           if (r_status == 0) {
             status = 1;
             world.isend(l_philosopher, 0, status);
@@ -95,7 +95,7 @@ bool stroganov_m_dining_philosophers::TestMPITaskParallel::distribution_forks() 
         world.isend(l_philosopher, 0, status);
 
         if (world.iprobe(l_philosopher, 0)) {
-          world.irecv(l_philosopher, 0, l_status);
+          world.recv(l_philosopher, 0, l_status);
           if (l_status == 0) {
             status = 1;
             world.isend(l_philosopher, 0, status);

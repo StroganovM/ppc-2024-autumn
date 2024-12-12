@@ -66,26 +66,26 @@ bool stroganov_m_dining_philosophers::TestMPITaskParallel::distribution_forks() 
   int r_status = -1;
 
   if (world.rank() % 2 == 0) {
-    world.send(l_philosopher, 0, status);
-    world.recv(l_philosopher, 0, l_status);
+    world.isend(l_philosopher, 0, status);
+    world.irecv(l_philosopher, 0, l_status);
     if (l_status == 0) {
-      world.send(r_philosopher, 0, status);
-      world.recv(r_philosopher, 0, r_status);
+      world.isend(r_philosopher, 0, status);
+      world.irecv(r_philosopher, 0, r_status);
       if (r_status == 0) {
         status = 1;
-        world.send(l_philosopher, 0, status);
-        world.send(r_philosopher, 0, status);
+        world.isend(l_philosopher, 0, status);
+        world.isend(r_philosopher, 0, status);
       }
     }
   } else {
     world.recv(r_philosopher, 0, r_status);
     if (r_status == 0) {
-      world.send(l_philosopher, 0, status);
-      world.recv(l_philosopher, 0, l_status);
+      world.isend(l_philosopher, 0, status);
+      world.irecv(l_philosopher, 0, l_status);
       if (l_status == 0) {
         status = 1;
-        world.send(l_philosopher, 0, status);
-        world.send(r_philosopher, 0, status);
+        world.isend(l_philosopher, 0, status);
+        world.isend(r_philosopher, 0, status);
       }
     }
   }

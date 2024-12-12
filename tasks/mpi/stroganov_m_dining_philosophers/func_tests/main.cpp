@@ -200,12 +200,12 @@ TEST(stroganov_m_dining_philosophers, Deadlock_Handling) {
 
   // Проверка дедлока на всех процессах
   bool local_deadlock = testMpiTaskParallel.check_deadlock();
-  bool global_deadlock = boost::mpi::all_reduce(world, local_deadlock, std::logical_or<bool>());
+  bool global_deadlock = boost::mpi::all_reduce(world, local_deadlock, std::logical_or<>());
   ASSERT_FALSE(global_deadlock);  // Дедлок не должен произойти
 
   // Проверка завершения работы всех философов
   bool local_all_think = testMpiTaskParallel.check_all_think();
-  bool global_all_think = boost::mpi::all_reduce(world, local_all_think, std::logical_and<bool>());
+  bool global_all_think = boost::mpi::all_reduce(world, local_all_think, std::logical_and<>());
   ASSERT_TRUE(global_all_think);  // Все философы должны завершить работу
 
   // Постобработка

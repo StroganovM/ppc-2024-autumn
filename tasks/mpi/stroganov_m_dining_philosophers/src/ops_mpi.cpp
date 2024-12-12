@@ -92,35 +92,6 @@ bool stroganov_m_dining_philosophers::TestMPITaskParallel::distribution_forks() 
   return true;
 }
 
-bool stroganov_m_dining_philosophers::TestMPITaskParallel::distribution_forks() {
-  if (count_philosophers == 0) {
-    return false;
-  }
-
-  status = 2;
-  int l_status = -1;
-  int r_status = -1;
-
-  // Сначала запрашиваем статус у левого философа
-  world.isend(l_philosopher, 0, status);
-  world.irecv(l_philosopher, 0, l_status);
-
-  if (l_status == 0) {
-    // Если левая вилка свободна, запрашиваем статус у правого философа
-    world.isend(r_philosopher, 0, status);
-    world.irecv(r_philosopher, 0, r_status);
-
-    if (r_status == 0) {
-      // Если обе вилки свободны, обновляем статус
-      status = 1;
-      world.isend(l_philosopher, 0, status);
-      world.isend(r_philosopher, 0, status);
-    }
-  }
-
-  return true;
-}
-
 bool stroganov_m_dining_philosophers::TestMPITaskParallel::run() {
   internal_order_test();
   bool done = false;

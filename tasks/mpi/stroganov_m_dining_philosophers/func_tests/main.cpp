@@ -108,17 +108,17 @@ TEST(stroganov_m_dining_philosophers, Test_with_5_philosophers) {
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskData);
 
   // Проверка предварительной валидации
-  if (testMpiTaskParallel.validation()) {
-    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-    ASSERT_TRUE(testMpiTaskParallel.run());
-    ASSERT_TRUE(testMpiTaskParallel.post_processing());
+  if (world.size() < 2) {
+    GTEST_SKIP();
+  }
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
-    bool deadlock_detected = testMpiTaskParallel.check_deadlock();
-    if (world.rank() == 0) {
-      ASSERT_FALSE(deadlock_detected);
-    }
-  } else {
-    GTEST_SKIP() << "Skipping test due to failed validation";
+  bool deadlock_detected = testMpiTaskParallel.check_deadlock();
+  if (world.rank() == 0) {
+    ASSERT_FALSE(deadlock_detected);
   }
 }
 
@@ -134,18 +134,17 @@ TEST(stroganov_m_dining_philosophers, Test_with_15_philosophers) {
   // Создание тестового объекта с передачей taskData
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskData);
 
-  // Проверка предварительной валидации
-  if (testMpiTaskParallel.validation()) {
-    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-    ASSERT_TRUE(testMpiTaskParallel.run());
-    ASSERT_TRUE(testMpiTaskParallel.post_processing());
+  if (world.size() < 2) {
+    GTEST_SKIP();
+  }
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
-    bool deadlock_detected = testMpiTaskParallel.check_deadlock();
-    if (world.rank() == 0) {
-      ASSERT_FALSE(deadlock_detected);
-    }
-  } else {
-    GTEST_SKIP() << "Skipping test due to failed validation";
+  bool deadlock_detected = testMpiTaskParallel.check_deadlock();
+  if (world.rank() == 0) {
+    ASSERT_FALSE(deadlock_detected);
   }
 }
 
@@ -161,18 +160,17 @@ TEST(stroganov_m_dining_philosophers, Test_with_25_philosophers) {
   // Создание тестового объекта с передачей taskData
   stroganov_m_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskData);
 
-  // Проверка предварительной валидации
-  if (testMpiTaskParallel.validation()) {
-    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-    ASSERT_TRUE(testMpiTaskParallel.run());
-    ASSERT_TRUE(testMpiTaskParallel.post_processing());
+  if (world.size() < 2) {
+    GTEST_SKIP();
+  }
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
-    bool deadlock_detected = testMpiTaskParallel.check_deadlock();
-    if (world.rank() == 0) {
-      ASSERT_FALSE(deadlock_detected);
-    }
-  } else {
-    GTEST_SKIP() << "Skipping test due to failed validation";
+  bool deadlock_detected = testMpiTaskParallel.check_deadlock();
+  if (world.rank() == 0) {
+    ASSERT_FALSE(deadlock_detected);
   }
 }
 
